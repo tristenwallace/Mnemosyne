@@ -10,6 +10,9 @@ def hello():
 
 @app.route('/testPost', methods = ['POST'])
 def update_text():
+    data = request.get_json()
+    print(data['text'])
+    print(data['name'])
     print(request.form)
 
 if __name__ == '__main__':
