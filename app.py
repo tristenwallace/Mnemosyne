@@ -6,6 +6,7 @@ from flask import request
 
 API_URL = 'https://api.groupme.com/v3/bots/post'
 BOT_ID = os.environ['BOT_ID']
+BOT_NAME = 'Test'
 
 app = Flask(__name__)
 
@@ -17,7 +18,8 @@ def hello():
 @app.route('/testPost', methods = ['POST'])
 def echo():
     data = request.get_json()
-    sendMessage(f'Hello {data["name"]}, you said "{data["text"]}"')
+    if(data["name"] != BOT_NAME):
+        sendMessage(f'Hello {data["name"]}, you said "{data["text"]}"')
     return "good", 200
 
 def sendMessage(text):
