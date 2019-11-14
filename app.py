@@ -11,9 +11,10 @@ def hello():
 @app.route('/testPost', methods = ['POST'])
 def update_text():
     data = request.get_json()
-    print(data['text'])
-    print(data['name'])
-    print(request.form)
+    print(data)
+    #print(data['text'])
+    #print(data['name'])
+    return "good", 200
 
 if __name__ == '__main__':
     app.run()
