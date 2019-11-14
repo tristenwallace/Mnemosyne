@@ -13,6 +13,7 @@ app = Flask(__name__)
 def hello():
     return "Hello World!"
 
+#Echo message back
 @app.route('/testPost', methods = ['POST'])
 def echo():
     data = request.get_json()
