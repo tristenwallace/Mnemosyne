@@ -19,7 +19,6 @@ GROUPME_URL = 'https://image.groupme.com/pictures'
 MONGO_URI = os.environ['MONGODB_URI'] + '?retryWrites=false'
 BOT_ID = os.environ['BOT_ID']
 ACCESS_KEY = os.environ['ACCESS_KEY']
-CREDENTIAL_DIR = './creds'
 BOT_NAME = 'Test'
 
 #Flask App
@@ -33,6 +32,7 @@ creds = None
 dbCreds = db.creds.find_one({})
 if(dbCreds):
     creds = pickle.loads(dbCreds['rawCreds'])
+    print('creds loaded')
 
 #initiate google drive service
 driveService = build('drive', 'v3', credentials=creds)
@@ -79,6 +79,7 @@ def getImageUrl(fileId):
 
 # gets metadata for all files stored in google drive
 def getFileData():
+    print('getting file data')
     results = driveService.files().list(fields='nextPageToken, files(id, name, description)').execute()
     for file in results.get('files', []):
         print(file)
