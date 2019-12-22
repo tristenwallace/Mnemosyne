@@ -44,6 +44,19 @@ driveService = build('drive', 'v3', credentials=creds)
 #open dictionary
 fileDict = {}
 
+print('getting file data')
+results = driveService.files().list(fields='nextPageToken, files(id, name, description)').execute()
+for file in results.get('files', []):
+    print(file)
+    desc = ''
+    if 'description' in file:
+        desc = file['description']
+    fileDict[file['id']] = {
+        'name': file['name'],
+        'description': desc
+    }
+
+
 #Routes
 @app.route('/message', methods = ['POST'])
 def handleMessage():
@@ -77,20 +90,6 @@ def getImageUrl(fileId):
     fileDict[fileId]['imageUrl'] = imageUrl
     return imageUrl
 
-# gets metadata for all files stored in google drive
-def getFileData():
-    print('getting file data')
-    results = driveService.files().list(fields='nextPageToken, files(id, name, description)').execute()
-    for file in results.get('files', []):
-        print(file)
-        desc = ''
-        if 'description' in file:
-            desc = file['description']
-        fileDict[file['id']] = {
-            'name': file['name'],
-            'description': desc
-        }
-
 #sends a single picture
 def sendPic():
     fileId = choice(list(fileDict.keys()))
@@ -110,5 +109,4 @@ def sendPic():
     r = requests.post(url = API_URL,data = data)
 
 if __name__ == '__main__':
-    getFileData()
     app.run()
