@@ -1,16 +1,20 @@
 # Project Mnemosyne - A groupme bot to send memories
 
 ### Useful commands
-git push stage master - deploy to stage
-git push pro master - deploy to prod
+- `git push stage master` -> deploy to stage
+- `git push pro master` -> deploy to prod
 
 ### Deployment Urls
-https://mnemosyne-bot-stage.herokuapp.com/
-https://mnemosyne-bot-prod.herokuapp.com/
+- [Stage](https://mnemosyne-bot-stage.herokuapp.com/)
+- [Prod](https://mnemosyne-bot-prod.herokuapp.com/)
 
 ### Google drive
-All images are stored in a google drive
-contact nick to gain access to contribute
+All images are stored in a google drive  
+To post to a groupme group, images must be processed by a groupme process which returns a groupme image url
+
+### Database
+A mongoDb database is used to store google drive credentials and weekly goals  
+image urls may be stored in mongo one day
 
 ### Credentials
 no credentials are stored on github
