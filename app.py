@@ -29,33 +29,20 @@ client = pymongo.MongoClient(MONGO_URI)
 db = client.get_default_database()
 
 #get google drive credentials
-'''
-if os.path.exists(os.path.join(CREDENTIAL_DIR,'token.pickle')):
-    with open(os.path.join(CREDENTIAL_DIR,'token.pickle'), 'rb') as token:
-        creds = pickle.load(token)
-'''
-'''
-creds_data = {
-    "token": creds.token,
-    "refresh_token": creds.refresh_token,
-    "token_uri": creds.token_uri,
-    "client_id": creds.client_id,
-    "client_secret": creds.client_secret,
-    "scopes": creds.scopes,
-}
-print(json.dumps(creds_data))
-'''
-
-credsJson = '{"installed":{"client_id":"851292756303-519tn64r7l22advkg4ujnnfsl92sp2jo.apps.googleusercontent.com","project_id":"quickstart-1573780823387","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"OKGq1Nk5W1to4h_E3pUW3H7G","redirect_uris":["urn:ietf:wg:oauth:2.0:oob","http://localhost"]}}'
-SCOPES = ['https://www.googleapis.com/auth/drive']
-flow = InstalledAppFlow.from_client_config(json.loads(credsJson), SCOPES)
-creds = flow.run_local_server(port=0)
-
-#open dictionary
-fileDict = {}
+creds = None
+dbCreds = db.creds.find_one({})
+if(dbCreds):
+    creds = pickle.loads(dbCreds['rawCreds'])
 
 #initiate google drive service
 driveService = build('drive', 'v3', credentials=creds)
+
+
+#TODO - add mechanism to refresh creds
+#if not creds or not creds.valid:
+
+#open dictionary
+fileDict = {}
 
 #Routes
 @app.route('/message', methods = ['POST'])
