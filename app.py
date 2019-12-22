@@ -81,6 +81,7 @@ def getImageUrl(fileId):
 def getFileData():
     results = driveService.files().list(fields='nextPageToken, files(id, name, description)').execute()
     for file in results.get('files', []):
+        print(file)
         desc = ''
         if 'description' in file:
             desc = file['description']
