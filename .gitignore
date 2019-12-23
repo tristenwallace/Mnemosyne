@@ -1,6 +1,4 @@
 venv
 *~
 creds/*
-auth.py
-test.py
-testMongo.py
+testing/*
