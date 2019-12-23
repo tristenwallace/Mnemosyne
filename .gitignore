@@ -2,3 +2,4 @@ venv
 *~
 creds/*
 testing/*
+src/utils/__pycache__
