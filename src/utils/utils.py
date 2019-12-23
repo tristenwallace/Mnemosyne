@@ -19,7 +19,7 @@ GROUPME_ACCESS_KEY = os.environ['ACCESS_KEY']
 
 def getCurrentWeek():
     today = date.today()
-    startOfWeek = today - timedelta(days=date_obj.weekday())  # Monday
+    startOfWeek = today - timedelta(days=today.weekday())  # Monday
     endOfWeek = startOfWeek + timedelta(days=6)  # Sunday
     return (startOfWeek.strftime('%Y-%m-%d'), endOfWeek.strftime('%Y-%m-%d'))
 
@@ -88,3 +88,39 @@ def getImageUrl(fileId, fileDict, driveService):
 #Posts given data to groupme
 def post(data):
     requests.post(url = API_URL,data = data)
+
+def postText(text):
+    data = {
+        'bot_id': BOT_ID,
+        'text': text
+    }
+    post(data)
+
+def postImage(text, imageUrl):
+    data = {
+        'bot_id': BOT_ID,
+        'text': text,
+        'picture_url': imageUrl,
+        'attachments': [{
+            'type': 'image',
+            'url': imageUrl
+        }]
+    }
+    post(data)
+
+def formatGoalString(goal):
+    return f'''
+@{goal['name']}, your goal for {goal['startDate']} - {goal['endDate']} is:
+{goal['goal']}
+The status of your goal is: {goal['status']}
+    '''
+
+def formatThisWeeksGoalsString(goals, week):
+    goalString = ''
+    for goal in goals:
+        goalString += f'{goal["name"]}: {goal["goal"]} - {goal["status"]}\n'
+
+    if(goalString == ''):
+        return 'There are no goals yet this week'
+    else:
+        return f'Here are the goals for {week[0]} - {week[1]}:\n' + goalString

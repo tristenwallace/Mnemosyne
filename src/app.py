@@ -27,32 +27,88 @@ def handleMessage():
             addGoal(data['name'], text)
         elif('list goals' in text):
             listGoals()
+        elif('check my current goal' in  text):
+            checkGoal(data['name'])
+        elif('i finished my goal' in text):
+            updateStatus(data['name'], 'Completed')
+        elif('i failed my goal' in text):
+            updateStatus(data['name'], 'Failed')
+        elif('reset my status' in text):
+            updateStatus(data['name'], 'In Progress')
         elif('help' in text):
             listHelp()
-    return 'good', 200
+        else:
+            errorMessage = f'@{data["name"]}, I do not recognize that command, enter "@mnem help" to get a list of valid commands'
+            postText(errorMessage)
+    return 'good stuff', 200
+
+def updateStatus(name, status):
+    week = getCurrentWeek()
+    query = {
+        'startDate': week[0],
+        'endDate': week[1],
+        'name': name
+    }
+    goal = db.goals.find_one(query)
+    goal['status'] = status
+    if(goal):
+        db.goals.update_one({'_id': goal['_id']}, {"$set": goal})
+        resp = f'@{name}, the status of your current date was set to: {status}'
+        postText(resp)
+    else:
+        errorMessage = f'@{name}, you do not have a goal specified for {week[0]} - {week[1]}. Enter "@mnem add a goal: [new goal]" to add a goal'
+        postText(errorMessage)
+
+
+def checkGoal(name):
+    week = getCurrentWeek()
+    query = {
+        'startDate': week[0],
+        'endDate': week[1],
+        'name': name
+    }
+    goal = db.goals.find_one(query)
+    if(goal):
+        postText(formatGoalString(goal))
+    else:
+        errorMessage = f'@{name}, you do not have a goal specified for {week[0]} - {week[1]}. Enter "@mnem add a goal: [new goal]" to add a goal'
+        postText(errorMessage)
 
 def addGoal(name, text):
-    goal = ''.join(text.split('add a goal:')[1:]).strip()
+    goal = ''.join(text.split('add a goal:')[1:]).strip() #some clever parsing
+    if(not goal):
+        postText(f'@{name}, the goal you specified is invalid')
+        return
     week = getCurrentWeek()
-    print(week[0], week[1])
-    print(goal)
+    goalDoc = {
+        'goal': goal,
+        'startDate': week[0],
+        'endDate': week[1],
+        'status': 'In Progress',
+        'name': name
+    }
+    db.goals.insert_one(goalDoc)
+    postText(f'@{name}, your goal was saved')
 
 def listGoals():
-    pass
+    week = getCurrentWeek()
+    query = {
+        'startDate': week[0],
+        'endDate': week[1]
+    }
+    goals = db.goals.find(query)
+    postText(formatThisWeeksGoalsString(goals, week))
 
 def listHelp():
     helpText = '''
-        Use the following commands:
+    Use the following commands:
         @mnem send a memory
         @mnem add a goal
         @mnem list goals
+        @mnem check my current goal
         @mnem help
     '''
-    data = {
-        'bot_id': BOT_ID,
-        'text': helpText
-    }
-    post(data)
+    postText(helpText)
 
 #sends a single picture
 def sendPic():
@@ -61,16 +117,7 @@ def sendPic():
     text = ''
     if('description' in fileDict[fileId]):
         text = fileDict[fileId]['description']
-    data = {
-        'bot_id': BOT_ID,
-        'text': text,
-        'picture_url': imageUrl,
-        'attachments': [{
-            'type': 'image',
-            'url': imageUrl
-        }]
-    }
-    post(data)
+    postImage(text, imageUrl)
 
 if __name__ == '__main__':
     app.run()

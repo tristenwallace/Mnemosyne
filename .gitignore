@@ -3,3 +3,4 @@ venv
 creds/*
 testing/*
 src/utils/__pycache__
+env.bat
