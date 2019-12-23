@@ -33,7 +33,7 @@ def handleMessage():
             updateStatus(data['name'], 'Completed')
         elif('i failed my goal' in text):
             updateStatus(data['name'], 'Failed')
-        elif('reset my status' in text):
+        elif('my goal is in progress' in text):
             updateStatus(data['name'], 'In Progress')
         elif('help' in text):
             listHelp()
@@ -106,6 +106,9 @@ def listHelp():
         @mnem add a goal
         @mnem list goals
         @mnem check my current goal
+        @mnem i failed my goal
+        @mnem i finished my goal
+        @mnem my goal is in progress
         @mnem help
     '''
     postText(helpText)
