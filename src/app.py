@@ -33,21 +33,16 @@ dbCreds = db.creds.find_one({})
 if(dbCreds):
     creds = pickle.loads(dbCreds['rawCreds'])
     print('creds loaded')
+#TODO - add mechanism to refresh creds
+#if not creds or not creds.valid:
 
 #initiate google drive service
 driveService = build('drive', 'v3', credentials=creds)
 
-
-#TODO - add mechanism to refresh creds
-#if not creds or not creds.valid:
-
 #open dictionary
 fileDict = {}
-
-print('getting file data')
 results = driveService.files().list(fields='nextPageToken, files(id, name, description)').execute()
 for file in results.get('files', []):
-    print(file)
     desc = ''
     if 'description' in file:
         desc = file['description']
@@ -56,20 +51,41 @@ for file in results.get('files', []):
         'description': desc
     }
 
-
 #Routes
 @app.route('/message', methods = ['POST'])
 def handleMessage():
     data = request.get_json()
-    if(data['name'] != BOT_NAME and data['text'].startswith('@mnem')):
-        parseRequest(data['text'])
+    text = data['text'].lower()
+    if(data['name'] != BOT_NAME and text.startswith('@mnem')):
+        if('send a memory' in text):
+            sendPic()
+        elif('add a goal' in text):
+            addGoal()
+        elif('list goals' in text):
+            listGoals()
+        elif('help' in text):
+            listHelp()
     return 'good', 200
 
-# param: message text to parse
-# return: void
-def parseRequest(text):
-    if('memory' in text):
-        sendPic()
+def addGoal():
+    pass
+
+def listGoals():
+    pass
+    
+def listHelp():
+    helpText = '''
+        Use the following commands:
+        @mnem send a memory
+        @mnem add a goal
+        @mnem list goals
+        @mnem help
+    '''
+    data = {
+        'bot_id': BOT_ID,
+        'text': helpText
+    }
+    r = requests.post(url = API_URL,data = data)
 
 # param: google drive id for a single file
 # return: url of image stored from groupme service
