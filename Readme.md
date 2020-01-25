@@ -19,3 +19,6 @@ image urls may be stored in mongo one day
 ### Credentials
 no credentials are stored on github
 Contact nick for groupme/ googledrive/ heroku credentials
+
+### Set BOT_ID
+heroku config:set BOT_ID=[id] --remote stage
