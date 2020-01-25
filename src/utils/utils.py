@@ -23,6 +23,12 @@ def getCurrentWeek():
     endOfWeek = startOfWeek + timedelta(days=6)  # Sunday
     return (startOfWeek.strftime('%Y-%m-%d'), endOfWeek.strftime('%Y-%m-%d'))
 
+def getLastWeek(): #should only be run by cronjob on monday
+    today = date.today()
+    startOfWeek = today - timedelta(days=7) #last Monday
+    endOfWeek = startOfWeek + timedelta(days=6)  #Last Sunday
+    return (startOfWeek.strftime('%Y-%m-%d'), endOfWeek.strftime('%Y-%m-%d'))
+    
 # param db: a mongodb connection
 # gets google drive credentials from mongodb
 def getGoogleCreds(db):
