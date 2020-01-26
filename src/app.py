@@ -44,12 +44,25 @@ def sendPic():
         text = fileDict[fileId]['description']
     postImage(text, imageUrl)
 
+def getGoal(name, week):
+    query = {
+        'startDate': week[0],
+        'endDate': week[1],
+        'name': name
+    }
+    goal = db.goals.find_one(query)
+    return goal
+    
 def addGoal(name, text):
+    week = getCurrentWeek()
+    currentGoal = getGoal(name, week)
+    if(currentGoal):
+        postText(f'@{name}, you can only have one goal per week')
+        return
     goal = ''.join(text.split('add a goal:')[1:]).strip() #some clever parsing
     if(not goal):
         postText(f'@{name}, the goal you specified is invalid')
         return
-    week = getCurrentWeek()
     goalDoc = {
         'goal': goal,
         'startDate': week[0],
@@ -69,13 +82,7 @@ def listGoalsForWeek(week):
     postText(formatThisWeeksGoalsString(goals, week))
 
 def checkGoal(name):
-    week = getCurrentWeek()
-    query = {
-        'startDate': week[0],
-        'endDate': week[1],
-        'name': name
-    }
-    goal = db.goals.find_one(query)
+    goal = getGoal(name, getCurrentWeek())
     if(goal):
         postText(formatGoalString(goal))
     else:
@@ -83,15 +90,9 @@ def checkGoal(name):
         postText(errorMessage)
 
 def updateStatus(name, status):
-    week = getCurrentWeek()
-    query = {
-        'startDate': week[0],
-        'endDate': week[1],
-        'name': name
-    }
-    goal = db.goals.find_one(query)
-    goal['status'] = status
+    goal = getGoal(name, getCurrentWeek())
     if(goal):
+        goal['status'] = status
         db.goals.update_one({'_id': goal['_id']}, {"$set": goal})
         resp = f'@{name}, the status of your current goal was set to: {status}'
         postText(resp)
@@ -121,8 +122,7 @@ def handleMessage():
         elif('add a goal:' in text):
             addGoal(data['name'], text)
         elif('list all goals' in text):
-            #listGoalsForWeek(getCurrentWeek)
-            endOfWeek()
+            listGoalsForWeek(getCurrentWeek)
         elif('check my current goal' in  text):
             checkGoal(data['name'])
         elif('i finished my goal' in text):
