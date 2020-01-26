@@ -52,7 +52,7 @@ def getGoal(name, week):
     }
     goal = db.goals.find_one(query)
     return goal
-    
+
 def addGoal(name, text):
     week = getCurrentWeek()
     currentGoal = getGoal(name, week)
@@ -122,7 +122,7 @@ def handleMessage():
         elif('add a goal:' in text):
             addGoal(data['name'], text)
         elif('list all goals' in text):
-            listGoalsForWeek(getCurrentWeek)
+            listGoalsForWeek(getCurrentWeek())
         elif('check my current goal' in  text):
             checkGoal(data['name'])
         elif('i finished my goal' in text):
