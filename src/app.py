@@ -53,13 +53,30 @@ def getGoal(name, week):
     goal = db.goals.find_one(query)
     return goal
 
+def replaceGoal(name, text):
+    currentGoal = getGoal(name, getCurrentWeek())
+    if(not currentGoal):
+        addGoal(data['name'], text)
+        return
+    goalText = parseGoalText(text)
+    if(not goal):
+        postText(f'@{name}, the goal you specified is invalid')
+        return
+    currentGoal['goal'] = goalText
+    currentGoal['status'] = 'In Progress'
+    db.goals.update_one({'_id': currentGoal['_id']}, {"$set": currentGoal})
+    postText(f'@{name}, your goal was saved')
+
+def parseGoalText(text):
+    return ''.join(text.split('add a goal:')[1:]).strip() #some clever parsing
+
 def addGoal(name, text):
     week = getCurrentWeek()
     currentGoal = getGoal(name, week)
     if(currentGoal):
-        postText(f'@{name}, you can only have one goal per week')
+        postText(f'@{name}, you can only have one goal per week, post "@mnem, replace my goal: new goal" to replace your goal')
         return
-    goal = ''.join(text.split('add a goal:')[1:]).strip() #some clever parsing
+    goal = parseGoalText(text)
     if(not goal):
         postText(f'@{name}, the goal you specified is invalid')
         return
@@ -104,6 +121,7 @@ def listHelp():
     helpText = '''
     Use the following commands:
         @mnem add a goal: some goal
+        @menm replace my goal: some goal
         @mnem list all goals
         @mnem check my current goal
         @mnem i finished my goal
@@ -121,6 +139,8 @@ def handleMessage():
             sendPic()
         elif('add a goal:' in text):
             addGoal(data['name'], text)
+        elif('replace my goal:' in text):
+            replaceGoal(data['name'], text)
         elif('list all goals' in text):
             listGoalsForWeek(getCurrentWeek())
         elif('check my current goal' in  text):
