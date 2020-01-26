@@ -120,8 +120,8 @@ def updateStatus(name, status):
 def listHelp():
     helpText = '''
     Use the following commands:
-        @mnem add a goal: some goal
-        @menm replace my goal: some goal
+        @mnem add a goal: goal
+        @mnem replace my goal: goal
         @mnem list all goals
         @mnem check my current goal
         @mnem i finished my goal
