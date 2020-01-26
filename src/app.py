@@ -59,7 +59,7 @@ def replaceGoal(name, text):
         addGoal(data['name'], text)
         return
     goalText = parseGoalText(text)
-    if(not goal):
+    if(not goalText):
         postText(f'@{name}, the goal you specified is invalid')
         return
     currentGoal['goal'] = goalText
