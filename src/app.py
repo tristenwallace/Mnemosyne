@@ -58,7 +58,7 @@ def replaceGoal(name, text):
     if(not currentGoal):
         addGoal(data['name'], text)
         return
-    goalText = parseGoalText(text)
+    goalText = parseGoalText(text, 'replace my goal:')
     if(not goalText):
         postText(f'@{name}, the goal you specified is invalid')
         return
@@ -67,8 +67,8 @@ def replaceGoal(name, text):
     db.goals.update_one({'_id': currentGoal['_id']}, {"$set": currentGoal})
     postText(f'@{name}, your goal was saved')
 
-def parseGoalText(text):
-    return ''.join(text.split('add a goal:')[1:]).strip() #some clever parsing
+def parseGoalText(text, command):
+    return ''.join(text.split(command)[1:]).strip() #some clever parsing
 
 def addGoal(name, text):
     week = getCurrentWeek()
@@ -76,7 +76,7 @@ def addGoal(name, text):
     if(currentGoal):
         postText(f'@{name}, you can only have one goal per week, post "@mnem, replace my goal: new goal" to replace your goal')
         return
-    goal = parseGoalText(text)
+    goal = parseGoalText(text, 'add a goal:')
     if(not goal):
         postText(f'@{name}, the goal you specified is invalid')
         return
