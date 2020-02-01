@@ -160,10 +160,11 @@ def initMessage():
     listHelp()
     return 'good stuff', 200
 
+#Init Scheduler
+scheduler.add_job(lastChance, 'cron', day_of_week='sun',hour='12',minute='0')
+scheduler.add_job(endOfWeek, 'cron', day_of_week='mon',hour='12',minute='0')
+scheduler.add_job(weeklyPic, 'cron', day_of_week='*',hour='16',minute='0')
+scheduler.start()
+
 if __name__ == '__main__':
-    #Init Scheduler
-    scheduler.add_job(lastChance, 'cron', day_of_week='sun',hour='12',minute='0')
-    scheduler.add_job(endOfWeek, 'cron', day_of_week='mon',hour='12',minute='0')
-    scheduler.add_job(weeklyPic, 'cron', day_of_week='*',hour='16',minute='0')
-    scheduler.start()
     app.run()
