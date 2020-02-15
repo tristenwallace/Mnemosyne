@@ -17,10 +17,10 @@ app = Flask(__name__)
 db = getMongoDb()
 driveService = getGoogleService(db)
 fileDict = getFiles(driveService)
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(timezone='US/Eastern')
 
 def weeklyPic():
-    if(randint(1,2) == 1):
+    if(randint(1,1) == 1):
         sendPic()
 
 def lastChance():
@@ -161,9 +161,9 @@ def initMessage():
     return 'good stuff', 200
 
 #Init Scheduler
-scheduler.add_job(lastChance, 'cron', day_of_week='sun',hour='12',minute='0')
-scheduler.add_job(endOfWeek, 'cron', day_of_week='mon',hour='12',minute='0')
-scheduler.add_job(weeklyPic, 'cron', day_of_week='*',hour='16',minute='0')
+scheduler.add_job(lastChance, 'cron', day_of_week='sat',hour='17',minute='55')
+scheduler.add_job(endOfWeek, 'cron', day_of_week='sat',hour='17',minute='55')
+scheduler.add_job(weeklyPic, 'cron', day_of_week='*',hour='17',minute='57')
 scheduler.start()
 
 if __name__ == '__main__':
