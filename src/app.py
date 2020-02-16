@@ -15,8 +15,8 @@ app = Flask(__name__)
 
 #Initiate connections and get files
 db = getMongoDb()
-driveService = getGoogleService(db)
-fileDict = getFiles(driveService)
+#driveService = getGoogleService(db)
+fileDict = getFiles()
 scheduler = BackgroundScheduler(timezone='US/Eastern')
 
 def weeklyPic():
@@ -38,7 +38,7 @@ def endOfWeek(): #should run Monday afternoon
 
 def sendPic():
     fileId = choice(list(fileDict.keys()))
-    imageUrl = getImageUrl(fileId, fileDict, driveService)
+    imageUrl = getImageUrl(fileId, fileDict)
     text = ''
     if('description' in fileDict[fileId]):
         text = fileDict[fileId]['description']

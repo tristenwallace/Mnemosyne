@@ -56,7 +56,8 @@ def getMongoDb():
 # param driveService: google drive service
 # returns a dictionary from fileId to name and description
 # gets a list of file metadatas stored in google drive
-def getFiles(driveService):
+def getFiles():
+    driveService = getGoogleService(db)
     fileDict = {}
     results = driveService.files().list(fields='nextPageToken, files(id, name, description)').execute()
     for file in results.get('files', []):
@@ -74,24 +75,22 @@ def getFiles(driveService):
 # param driveService: google drive service
 # return: url of image stored from groupme service
 # downloads file from google drive, uploads to groupme and returns url of image to send
-def getImageUrl(fileId, fileDict, driveService):
+def getImageUrl(fileId, fileDict):
     if('imageUrl' in fileDict[fileId]):
         return fileDict[fileId]['imageUrl']
-    try:
-        req = driveService.files().get_media(fileId=fileId)
-        fh = io.BytesIO()
-        downloader = MediaIoBaseDownload(fh, req)
-        done = False
-        while done is False:
-            status, done = downloader.next_chunk()
-        fh.seek(0)
-        res = requests.post(url=GROUPME_URL, data=fh,
-                headers={'Content-Type': 'image/jpeg','X-Access-Token': GROUPME_ACCESS_KEY})
-        imageUrl = res.json()['payload']['url']
-        fileDict[fileId]['imageUrl'] = imageUrl
-        return imageUrl
-    except:
-        getImageUrl(fileId, fileDict, driveService)
+    driveService = getGoogleService(db)
+    req = driveService.files().get_media(fileId=fileId)
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, req)
+    done = False
+    while done is False:
+        status, done = downloader.next_chunk()
+    fh.seek(0)
+    res = requests.post(url=GROUPME_URL, data=fh,
+            headers={'Content-Type': 'image/jpeg','X-Access-Token': GROUPME_ACCESS_KEY})
+    imageUrl = res.json()['payload']['url']
+    fileDict[fileId]['imageUrl'] = imageUrl
+    return imageUrl
 
 #param data: dictionary of metadata and info to send
 #Posts given data to groupme
