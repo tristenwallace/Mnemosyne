@@ -66,7 +66,7 @@ def replaceGoal(name, text):
         return
     currentGoal['goal'] = goalText
     currentGoal['status'] = 'In Progress'
-    db = getMongoDb()s
+    db = getMongoDb()
     db.goals.update_one({'_id': currentGoal['_id']}, {"$set": currentGoal})
     postText(f'@{name}, your goal was saved')
 
