@@ -56,7 +56,7 @@ def getMongoDb():
 # param driveService: google drive service
 # returns a dictionary from fileId to name and description
 # gets a list of file metadatas stored in google drive
-def getFiles():
+def getFiles(db):
     driveService = getGoogleService(db)
     fileDict = {}
     results = driveService.files().list(fields='nextPageToken, files(id, name, description)').execute()
@@ -75,7 +75,7 @@ def getFiles():
 # param driveService: google drive service
 # return: url of image stored from groupme service
 # downloads file from google drive, uploads to groupme and returns url of image to send
-def getImageUrl(fileId, fileDict):
+def getImageUrl(fileId, fileDict, db):
     if('imageUrl' in fileDict[fileId]):
         return fileDict[fileId]['imageUrl']
     driveService = getGoogleService(db)
