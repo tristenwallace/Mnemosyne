@@ -44,8 +44,7 @@ def getGoogleCreds():
 # param db: a mongodb connection
 # returns a google drive service
 def getGoogleService():
-    db = getMongoDb()
-    creds = getGoogleCreds(db)
+    creds = getGoogleCreds()
     return build('drive', 'v3', credentials=creds)
 
 # returns a mongo db connection
@@ -58,9 +57,8 @@ def getMongoDb():
 # param driveService: google drive service
 # returns a dictionary from fileId to name and description
 # gets a list of file metadatas stored in google drive
-def getFiles()):
-    db = getMongoDb()
-    driveService = getGoogleService(db)
+def getFiles():
+    driveService = getGoogleService()
     fileDict = {}
     results = driveService.files().list(fields='nextPageToken, files(id, name, description)').execute()
     for file in results.get('files', []):
@@ -81,8 +79,7 @@ def getFiles()):
 def getImageUrl(fileId, fileDict):
     if('imageUrl' in fileDict[fileId]):
         return fileDict[fileId]['imageUrl']
-    db = getMongoDb()
-    driveService = getGoogleService(db)
+    driveService = getGoogleService()
     req = driveService.files().get_media(fileId=fileId)
     fh = io.BytesIO()
     downloader = MediaIoBaseDownload(fh, req)
