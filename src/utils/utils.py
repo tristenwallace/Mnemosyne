@@ -31,7 +31,8 @@ def getLastWeek(): #should only be run by cronjob on monday
 
 # param db: a mongodb connection
 # gets google drive credentials from mongodb
-def getGoogleCreds(db):
+def getGoogleCreds():
+    db = getMongoDb()
     creds = None
     dbCreds = db.creds.find_one({})
     if(dbCreds):
@@ -42,7 +43,8 @@ def getGoogleCreds(db):
 
 # param db: a mongodb connection
 # returns a google drive service
-def getGoogleService(db):
+def getGoogleService():
+    db = getMongoDb()
     creds = getGoogleCreds(db)
     return build('drive', 'v3', credentials=creds)
 
@@ -56,7 +58,8 @@ def getMongoDb():
 # param driveService: google drive service
 # returns a dictionary from fileId to name and description
 # gets a list of file metadatas stored in google drive
-def getFiles(db):
+def getFiles()):
+    db = getMongoDb()
     driveService = getGoogleService(db)
     fileDict = {}
     results = driveService.files().list(fields='nextPageToken, files(id, name, description)').execute()
@@ -75,9 +78,10 @@ def getFiles(db):
 # param driveService: google drive service
 # return: url of image stored from groupme service
 # downloads file from google drive, uploads to groupme and returns url of image to send
-def getImageUrl(fileId, fileDict, db):
+def getImageUrl(fileId, fileDict):
     if('imageUrl' in fileDict[fileId]):
         return fileDict[fileId]['imageUrl']
+    db = getMongoDb()
     driveService = getGoogleService(db)
     req = driveService.files().get_media(fileId=fileId)
     fh = io.BytesIO()

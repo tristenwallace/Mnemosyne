@@ -14,9 +14,9 @@ BOT_NAME = 'Test'
 app = Flask(__name__)
 
 #Initiate connections and get files
-db = getMongoDb()
+#db = getMongoDb()
 #driveService = getGoogleService(db)
-fileDict = getFiles(db)
+fileDict = getFiles()
 scheduler = BackgroundScheduler(timezone='US/Eastern')
 
 def weeklyPic():
@@ -33,12 +33,13 @@ def endOfWeek(): #should run Monday afternoon
         'endDate': week[1],
         'status': 'In Progress'
     }
+    db = getMongoDb()
     goals = db.goals.update(query, { '$set': { 'status': 'Failed'}}, multi=True )
     listGoalsForWeek(week)
 
 def sendPic():
     fileId = choice(list(fileDict.keys()))
-    imageUrl = getImageUrl(fileId, fileDict, db)
+    imageUrl = getImageUrl(fileId, fileDict)
     text = ''
     if('description' in fileDict[fileId]):
         text = fileDict[fileId]['description']
@@ -50,6 +51,7 @@ def getGoal(name, week):
         'endDate': week[1],
         'name': name
     }
+    db = getMongoDb()
     goal = db.goals.find_one(query)
     return goal
 
@@ -64,6 +66,7 @@ def replaceGoal(name, text):
         return
     currentGoal['goal'] = goalText
     currentGoal['status'] = 'In Progress'
+    db = getMongoDb()s
     db.goals.update_one({'_id': currentGoal['_id']}, {"$set": currentGoal})
     postText(f'@{name}, your goal was saved')
 
@@ -87,6 +90,7 @@ def addGoal(name, text):
         'status': 'In Progress',
         'name': name
     }
+    db = getMongoDb()
     db.goals.insert_one(goalDoc)
     postText(f'@{name}, your goal was saved')
 
@@ -95,6 +99,7 @@ def listGoalsForWeek(week):
         'startDate': week[0],
         'endDate': week[1]
     }
+    db = getMongoDb()
     goals = db.goals.find(query)
     postText(formatThisWeeksGoalsString(goals, week))
 
@@ -110,6 +115,7 @@ def updateStatus(name, status):
     goal = getGoal(name, getCurrentWeek())
     if(goal):
         goal['status'] = status
+        db = getMongoDb()
         db.goals.update_one({'_id': goal['_id']}, {"$set": goal})
         resp = f'@{name}, the status of your current goal was set to: {status}'
         postText(resp)
