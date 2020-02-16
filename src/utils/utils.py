@@ -28,7 +28,7 @@ def getLastWeek(): #should only be run by cronjob on monday
     startOfWeek = today - timedelta(days=7) #last Monday
     endOfWeek = startOfWeek + timedelta(days=6)  #Last Sunday
     return (startOfWeek.strftime('%Y-%m-%d'), endOfWeek.strftime('%Y-%m-%d'))
-    
+
 # param db: a mongodb connection
 # gets google drive credentials from mongodb
 def getGoogleCreds(db):
@@ -77,18 +77,21 @@ def getFiles(driveService):
 def getImageUrl(fileId, fileDict, driveService):
     if('imageUrl' in fileDict[fileId]):
         return fileDict[fileId]['imageUrl']
-    req = driveService.files().get_media(fileId=fileId)
-    fh = io.BytesIO()
-    downloader = MediaIoBaseDownload(fh, req)
-    done = False
-    while done is False:
-        status, done = downloader.next_chunk()
-    fh.seek(0)
-    res = requests.post(url=GROUPME_URL, data=fh,
-            headers={'Content-Type': 'image/jpeg','X-Access-Token': GROUPME_ACCESS_KEY})
-    imageUrl = res.json()['payload']['url']
-    fileDict[fileId]['imageUrl'] = imageUrl
-    return imageUrl
+    try:
+        req = driveService.files().get_media(fileId=fileId)
+        fh = io.BytesIO()
+        downloader = MediaIoBaseDownload(fh, req)
+        done = False
+        while done is False:
+            status, done = downloader.next_chunk()
+        fh.seek(0)
+        res = requests.post(url=GROUPME_URL, data=fh,
+                headers={'Content-Type': 'image/jpeg','X-Access-Token': GROUPME_ACCESS_KEY})
+        imageUrl = res.json()['payload']['url']
+        fileDict[fileId]['imageUrl'] = imageUrl
+        return imageUrl
+    except:
+        getImageUrl(fileId, fileDict, driveService)
 
 #param data: dictionary of metadata and info to send
 #Posts given data to groupme

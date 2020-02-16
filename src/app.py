@@ -161,7 +161,7 @@ def initMessage():
     return 'good stuff', 200
 
 #Init Scheduler
-scheduler.add_job(lastChance, 'cron', day_of_week='sun',hour='13',minute='51')
+scheduler.add_job(lastChance, 'cron', day_of_week='sun',hour='12',minute='0')
 scheduler.add_job(endOfWeek, 'cron', day_of_week='mon',hour='12',minute='0')
 scheduler.add_job(weeklyPic, 'cron', day_of_week='*',hour='16',minute='0')
 scheduler.start()
