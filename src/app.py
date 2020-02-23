@@ -20,7 +20,7 @@ fileDict = getFiles()
 scheduler = BackgroundScheduler(timezone='US/Eastern')
 
 def weeklyPic():
-    if(randint(1,1) == 1):
+    if(randint(1,10) == 1):
         sendPic()
 
 def lastChance():
@@ -38,12 +38,16 @@ def endOfWeek(): #should run Monday afternoon
     listGoalsForWeek(week)
 
 def sendPic():
-    fileId = choice(list(fileDict.keys()))
-    imageUrl = getImageUrl(fileId, fileDict)
-    text = ''
-    if('description' in fileDict[fileId]):
-        text = fileDict[fileId]['description']
-    postImage(text, imageUrl)
+    try:
+        fileId = choice(list(fileDict.keys()))
+        imageUrl = getImageUrl(fileId, fileDict)
+        text = ''
+        if('description' in fileDict[fileId]):
+            text = fileDict[fileId]['description']
+        postImage(text, imageUrl)
+    except:
+        print('exception occured while sending photo, retrying')
+        sendPic()
 
 def getGoal(name, week):
     query = {
