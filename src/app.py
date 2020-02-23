@@ -127,6 +127,28 @@ def updateStatus(name, status):
         errorMessage = f'@{name}, you do not have a goal specified for {week[0]} - {week[1]}. Enter "@mnem add a goal: [new goal]" to add a goal'
         postText(errorMessage)
 
+def addQuote(name, text):
+    quote = parseGoalText(text, 'add a quote:')
+    if(not quote):
+        postText(f'@{name}, the quote you specified is invalid')
+        return
+    db = getMongoDb()
+    db.quotes.insert_one({'quote': quote})
+    postText(f'@{name}, your quote was saved')
+
+def listQuotes():
+    db = getMongoDb()
+    quotes = db.quotes.find({})
+    quoteString = 'Here are my saved quotes:\n'
+    quoteBool = False
+    for quote in quotes:
+        quoteBool = True
+        quoteString += f'{quote["quote"]}\n'
+    if(quoteBool):
+        postText(quoteString)
+    else:
+        postText('There are no quotes saved yet')
+
 def listHelp():
     helpText = '''
     Use the following commands:
@@ -136,6 +158,8 @@ def listHelp():
         @mnem check my current goal
         @mnem i finished my goal
         @mnem send a memory
+        @mnem add a quote: quote
+        @mnem list quotes
         @mnem help
     '''
     postText(helpText)
@@ -157,6 +181,10 @@ def handleMessage():
             checkGoal(data['name'])
         elif('i finished my goal' in text):
             updateStatus(data['name'], 'Completed')
+        elif('add a quote' in text):
+            addQuote(data['name'], text)
+        elif('list quotes' in text):
+            listQuotes()
         elif('help' in text):
             listHelp()
         else:
