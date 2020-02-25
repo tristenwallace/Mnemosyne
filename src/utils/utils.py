@@ -13,7 +13,6 @@ from datetime import datetime, timedelta, date
 GROUPME_URL = 'https://image.groupme.com/pictures'
 MONGO_URI = os.environ['MONGODB_URI'] + '?retryWrites=false'
 API_URL = 'https://api.groupme.com/v3/bots/post'
-BOT_NAME = 'Test'
 BOT_ID = os.environ['BOT_ID']
 GROUPME_ACCESS_KEY = os.environ['ACCESS_KEY']
 
