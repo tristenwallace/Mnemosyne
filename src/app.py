@@ -194,7 +194,7 @@ def handleMessage():
 
 @app.route('/init', methods = ['GET'])
 def initMessage():
-    postText("Hello everyone, I'm Mnemosyne. I'm here to send you memories and to keep track of your weekly goals.")
+    postText("Hello everyone, I'm Mnemosyne. I'm here to send you memories, keep track of your weekly goals and store our quotes.")
     listHelp()
     return 'good stuff', 200
 
