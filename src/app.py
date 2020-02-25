@@ -8,7 +8,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from random import randint
 
 #App constants
-BOT_NAME = 'Test'
+BOT_NAME = 'Mnemosyne'
 
 #Flask App
 app = Flask(__name__)
