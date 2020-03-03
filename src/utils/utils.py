@@ -126,7 +126,7 @@ The status of your goal is: {goal['status']}
 def formatThisWeeksGoalsString(goals, week):
     goalString = ''
     for goal in goals:
-        goalString += f'{goal["name"]}: {goal["goal"]} - {goal["status"]}\n'
+        goalString += f'{goal["name"]}: \n\t{goal["goal"]} \n\tStatus: {goal["status"]}\n'
 
     if(goalString == ''):
         return 'There are no goals yet this week'
@@ -136,7 +136,7 @@ def formatThisWeeksGoalsString(goals, week):
 def formatAllGoalsString(goals):
     goalString = ''
     for goal in goals:
-        goalString += f'{goal["name"]}: {goal["goal"]} - {goal["status"]} ({goal["startDate"]} - {goal["endDate"]})\n'
+        goalString += f'{goal["name"]}: \n\t{goal["goal"]} \n\tStatus: {goal["status"]} \n\t{goal["startDate"]} - {goal["endDate"]}\n'
 
     if(goalString == ''):
         return 'There are no goals'
