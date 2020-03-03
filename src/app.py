@@ -62,7 +62,7 @@ def getGoal(name, week):
 def replaceGoal(name, text):
     currentGoal = getGoal(name, getCurrentWeek())
     if(not currentGoal):
-        addGoal(data['name'], text)
+        addGoal(name, text)
         return
     goalText = parseGoalText(text, 'replace my goal:')
     if(not goalText):
