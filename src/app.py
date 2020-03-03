@@ -69,7 +69,7 @@ def replaceGoal(name, text):
     if(not currentGoal):
         addGoal(name, f'add a goal: {goalText}')
         return
-        
+
     currentGoal['goal'] = goalText
     currentGoal['status'] = 'In Progress'
     db = getMongoDb()
@@ -108,6 +108,11 @@ def listGoalsForWeek(week):
     db = getMongoDb()
     goals = db.goals.find(query)
     postText(formatThisWeeksGoalsString(goals, week))
+
+def listAllGoals():
+    db = getMongoDb()
+    goals = db.goals.find({})
+    postText(formatAllGoalsString(goals))
 
 def checkGoal(name):
     goal = getGoal(name, getCurrentWeek())
@@ -156,6 +161,7 @@ def listHelp():
     Use the following commands:
         @mnem add a goal: goal
         @mnem replace my goal: goal
+        @mnem list this weeks goals
         @mnem list all goals
         @mnem check my current goal
         @mnem i finished my goal
@@ -178,6 +184,8 @@ def handleMessage():
         elif('replace my goal:' in text):
             replaceGoal(data['name'], text)
         elif('list all goals' in text):
+            listAllGoals()
+        elif('list this weeks goals' in text):
             listGoalsForWeek(getCurrentWeek())
         elif('check my current goal' in  text):
             checkGoal(data['name'])

@@ -132,3 +132,13 @@ def formatThisWeeksGoalsString(goals, week):
         return 'There are no goals yet this week'
     else:
         return f'Here are the goals for {week[0]} - {week[1]}:\n' + goalString
+
+def formatAllGoalsString(goals):
+    goalString = ''
+    for goal in goals:
+        goalString += f'{goal["name"]}: {goal["goal"]} - {goal["status"]} ({goal["startDate"]} - {goal["endDate"]})\n'
+
+    if(goalString == ''):
+        return 'There are no goals'
+    else:
+        return f'Here are all the goals:\n{goalString}'
