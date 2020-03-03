@@ -60,14 +60,16 @@ def getGoal(name, week):
     return goal
 
 def replaceGoal(name, text):
-    currentGoal = getGoal(name, getCurrentWeek())
-    if(not currentGoal):
-        addGoal(name, text)
-        return
     goalText = parseGoalText(text, 'replace my goal:')
     if(not goalText):
         postText(f'@{name}, the goal you specified is invalid')
         return
+
+    currentGoal = getGoal(name, getCurrentWeek())
+    if(not currentGoal):
+        addGoal(name, f'add a goal: {goalText}')
+        return
+        
     currentGoal['goal'] = goalText
     currentGoal['status'] = 'In Progress'
     db = getMongoDb()
