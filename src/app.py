@@ -24,7 +24,7 @@ def weeklyPic():
         sendPic()
 
 def lastChance():
-    postText('Hello, If you completed your goal this week, please post "@mnem i finished my goal" by noon tomorrow')
+    postText('Hello, If you completed your goal this week, please post "@mnem i finished my goal" by 8PM EST')
 
 def endOfWeek(): #should run Monday afternoon
     week = getLastWeek()
