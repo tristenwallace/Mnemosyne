@@ -115,7 +115,8 @@ def listAllGoals():
     postText(formatAllGoalsString(goals))
 
 def checkGoal(name):
-    goal = getGoal(name, getCurrentWeek())
+    week = getCurrentWeek()
+    goal = getGoal(name, week)
     if(goal):
         postText(formatGoalString(goal))
     else:
@@ -123,7 +124,8 @@ def checkGoal(name):
         postText(errorMessage)
 
 def updateStatus(name, status):
-    goal = getGoal(name, getCurrentWeek())
+    week = getCurrentWeek()
+    goal = getGoal(name, week)
     if(goal):
         goal['status'] = status
         db = getMongoDb()
