@@ -95,14 +95,20 @@ def getImageUrl(fileId, fileDict):
 #param data: dictionary of metadata and info to send
 #Posts given data to groupme
 def post(data):
-    requests.post(url = API_URL,data = data)
+    r = requests.post(url = API_URL,data = data)
+    print(r.status_code)
+    print(r.text)
 
 def postText(text):
-    data = {
-        'bot_id': BOT_ID,
-        'text': text
-    }
-    post(data)
+    for i in range(0,len(text),998):
+        data = {
+            'bot_id': BOT_ID
+        }
+        if(i+998 >= len(text)):
+            data['text'] = text[i:]
+        else:
+            data['text'] = text[i:i+998]
+        post(data)
 
 def postImage(text, imageUrl):
     data = {
