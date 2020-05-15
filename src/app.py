@@ -215,6 +215,7 @@ def sendCustomMessage():
     data = request.get_json()
     text = data['text']
     postText(text)
+    return 'good stuff', 200
 
 #Init Scheduler
 scheduler.add_job(lastChance, 'cron', day_of_week='sun',hour='12',minute='0')
